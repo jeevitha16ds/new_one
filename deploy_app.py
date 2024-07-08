@@ -3,12 +3,34 @@ import pickle
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
+import base64
 
 # Load the model
 model = pickle.load(open('svm_model.pkl', 'rb'))
 
 # Initialize the scaler
 scaler = MinMaxScaler()
+
+# Function to add a background image
+def add_bg_from_local(image_path):
+    with open(image_path, "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read()).decode()
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background-image: url("data:image/jpeg;base64,{encoded_string}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+# Add the background image
+add_bg_from_local('background.jpg')
 
 # Streamlit app
 st.title('Insurance Charges Prediction')
