@@ -11,8 +11,8 @@ model = pickle.load(open('svm_model.pkl', 'rb'))
 # Initialize the scaler
 scaler = MinMaxScaler()
 
-# Function to add a background image
-def add_bg_from_local(image_path):
+# Function to add a background image and custom CSS
+def add_bg_and_custom_css(image_path):
     with open(image_path, "rb") as image_file:
         encoded_string = base64.b64encode(image_file.read()).decode()
     st.markdown(
@@ -24,16 +24,27 @@ def add_bg_from_local(image_path):
             background-repeat: no-repeat;
             background-attachment: fixed;
         }}
+        .main {{
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            padding: 50px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+        }}
         </style>
         """,
         unsafe_allow_html=True
     )
 
-# Add the background image
-add_bg_from_local('background.jpg')
+# Add the background image and custom CSS
+add_bg_and_custom_css('NEW.jpg')
 
 # Streamlit app
 st.title('Insurance Charges Prediction')
+
+# Add custom HTML to create a container with the class "main"
+st.markdown('<div class="main">', unsafe_allow_html=True)
 
 # Collect input data
 age = st.number_input('Age', min_value=0, max_value=100, value=25)
@@ -67,3 +78,6 @@ if st.button('Predict'):
     prediction = model.predict(input_features)
     output = round(np.exp(prediction[0]), 2)
     st.success('Predicted Charges: ${}'.format(output))
+
+# Close the custom HTML container
+st.markdown('</div>', unsafe_allow_html=True)
